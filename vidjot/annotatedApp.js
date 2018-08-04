@@ -1,12 +1,18 @@
 // import express
 const express = require('express');
+// import express-handlebars
+const exphbs = require('express-handlebars'); // from docs
+// bring in mongoose
+const mongoose = require('mongoose');
+
 
 // init app by invoking express
 const app = express();
 
+// Map gobal promise - get rid of warning // no warning in this version, unneccesary?
+mongoose.Promise = global.Promise;
 
-
-// How middleware works
+// How middleware works // just an ex, no need in this app
 app.use(function(req, res, next) {
   //console.log(Date.now());
   
@@ -18,6 +24,21 @@ app.use(function(req, res, next) {
   next();
 });
 
+
+//middleware for mongoose, connect to server, catch promise with .then, catch error with .catch
+// Connect to mongoose => pass the server to connect to ('mongodb://localhost/_whatever_you_want_to_name_your_server_', and pass object with useMongoClient: true)
+mongoose.connect('mongodb://localhost:27017/myapp', { // in tutorial the port is not specified 
+    //useMongoClient: true, // this command is now deprecated
+    useNewUrlParser: true // in the tutorial this is not used
+  })
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.log(err)); // to catch a promise
+
+// Hnadlebars Middleware
+app.engine('handlebars', exphbs({
+  defaultLayout: 'main'
+}));
+app.set('view engine', 'handlebars');
 
 
 // Index Route

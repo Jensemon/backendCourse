@@ -1,11 +1,24 @@
-// import express
+
 const express = require('express');
-// import express-handlebars
-const exphbs = require('express-handlebars'); // from docs
+const exphbs = require('express-handlebars');
+const mongoose = require('mongoose');
 
 
 // init app by invoking express
 const app = express();
+
+
+//middleware for mongoose, connect to server, catch promise with .then, catch error with .catch
+mongoose.connect('mongodb://localhost:27017/myapp', { 
+  useNewUrlParser: true
+})
+.then(() => console.log('MongoDB Connected...'))
+.catch(err => console.log(err)); // to catch a promise
+
+// load idea model
+require('./models/Idea');
+const Idea = mongoose.model('ideas');
+
 
 // Hnadlebars Middleware
 app.engine('handlebars', exphbs({
