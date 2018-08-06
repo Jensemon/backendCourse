@@ -11,7 +11,7 @@ const app = express();
 
 
 //middleware for mongoose, connect to server, catch promise with .then, catch error with .catch
-mongoose.connect('mongodb://localhost:27017/myapp', { 
+mongoose.connect('mongodb://localhost:27017/vidjot-dev', { 
   useNewUrlParser: true
 })
 .then(() => console.log('MongoDB Connected...'))
@@ -51,6 +51,9 @@ app.get('/about', (req, res) => {
   res.render('about');
 });
 
+// Idea Index Page
+
+
 // Add Idea Form
 app.get('/ideas/add', (req, res) => {
   res.render('ideas/add');
@@ -66,7 +69,7 @@ app.post('/ideas', (req, res) => {
   if(!req.body.details) {
     errors.push({text: 'Please add some details'});
   }
-  
+
   if (errors.length > 0) {
     res.render('ideas/add', {
       errors: errors,
@@ -74,7 +77,15 @@ app.post('/ideas', (req, res) => {
       details: req.body.details
     });
   } else {
-    res.send('Passed');
+    const newUser = {
+      title: req.body.title,
+      details: req.body.details,
+    };
+    new Idea(newUser)
+      .save()
+      .then(idea => {
+        res.redirect('/ideas');
+      })
   }
 
 });
